@@ -147,10 +147,11 @@ class InverseKinematicsUR3e(Node):
         theta_2 = np.arctan2(s, r) - np.arctan2(L5*np.sin(theta_3), L3+L5*np.cos(theta_3))
 
         
-        theta_4 = -(theta_3 -theta_2)
         theta_3 = -theta_3
         theta_2 = -theta_2
 
+        theta_4 = -(np.abs(theta_3) - np.abs(theta_2))
+        
         # Return the set of joint angles to move the robot
         return theta_1, theta_2, theta_3, theta_4, theta_5, theta_6
 
