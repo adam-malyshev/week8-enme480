@@ -26,20 +26,36 @@ class InverseKinematicsUR3e(Node):
         msg = CommandUR3e(destination = list(q), v= 1.0,a = 1.0,io_0 = False)
         self.publisher_.publish(msg)
         
-        self.get_logger().info(f'q:{q}')
+        self.get_logger().info(f'q:{np.rad2deg(q).astype(int).tolist()}')
         T = self.calculate_fk_from_dh(q)
         self.get_logger().info(f'\n{np.array_str(T, precision=3, suppress_small=True)}')
 
 
     def calculate_fk_from_dh(self,q):
-        A1 = self.get_a_matrix(0,    0.152,    q[0],             -np.pi/2) 
-        A2 = self.get_a_matrix(0.244,  0.120,    q[1],             np.pi) 
-        A3 = self.get_a_matrix(0.213, 0.093,     q[2],             np.pi) 
-        A4 = self.get_a_matrix(0,    0.104,     q[3],             -np.pi/2) 
-        A5 = self.get_a_matrix(0,    0.083,     q[4],             np.pi/2) 
-        A6 = self.get_a_matrix(0,    0.092,     q[5],             0) 
+        L1 = 0.152
+        L2 = 0.120
+        L3 = 0.244
+        L4 = 0.093
+        L5 = 0.213
+        L6 = 0.104
+        L7 = 0.083
+        L8 = 0.092
+        L9 = 0.0535
+        L10 = 0.059
+       
+        A1 = self.get_a_matrix(0,    L1,     q[0],          -np.pi/2) 
+        A2 = self.get_a_matrix(0,    L2,     q[1]-np.pi/2,  -np.pi/2) 
+        A3 = self.get_a_matrix(0,    L3,     0,             -np.pi/2) 
+        A4 = self.get_a_matrix(0,    L4,     q[2],          np.pi/2) 
+        A5 = self.get_a_matrix(0,    L5,     0,             np.pi/2) 
+        A6 = self.get_a_matrix(0,    L6,     q[3],          -np.pi/2) 
+        A7 = self.get_a_matrix(0,    L7,     q[4],          np.pi/2) 
+        A8 = self.get_a_matrix(0,    L8,     q[5]+np.pi/2,  np.pi/2) 
+        A9 = self.get_a_matrix(0,    L9,     0,             np.pi/2) 
+        A10 = self.get_a_matrix(0,   -L10,    np.pi/2,       0) 
+        
         #compute T
-        T = A1@A2@A3@A4@A5@A6
+        T = A1@A2@A3@A4@A5@A6@A7@A8@A9@A10
 
         return T
     def get_a_matrix(self, r, d, theta, alpha):
@@ -78,9 +94,9 @@ class InverseKinematicsUR3e(Node):
         # Step 1: find gripper position relative to the base of UR3,
         # and set theta_5 equal to -pi/2
         
-        xgrip = xWgrip - 0.15
-        ygrip = yWgrip + 0.15
-        zgrip = zWgrip + 0.01
+        xgrip = xWgrip + 0.15
+        ygrip = yWgrip - 0.15
+        zgrip = zWgrip - 0.01
 
         yawgrip = yawWgrip*np.pi/180
 
@@ -97,13 +113,15 @@ class InverseKinematicsUR3e(Node):
 
         # Step 3: find theta_1
         
+        #beta is the angle from the x axis to the vector (x_cen, y_cen)        
         beta = np.arctan2(y_cen, x_cen)
 
-        dx = L4 + L5 + L7 
         dy = L2 - L4 + L6
+        r = np.sqrt(x_cen**2 + y_cen**2)
 
-        alpha = np.arctan2(dy, dx)
-
+        #alpha is the angle from the x axis to vector when theta_1 is 0
+        alpha = np.arcsin(dy/r)
+        print(alpha*180/np.pi)
         theta_1 = beta - alpha
 
 
