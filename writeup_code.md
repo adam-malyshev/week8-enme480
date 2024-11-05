@@ -245,3 +245,39 @@ if __name__ == '__main__':
     else:
         main(sys.argv)
 ~~~
+
+
+## Test Cases
+
+
+![Test 1 image](https://i.postimg.cc/9FbRp3Tq/test1.png)
+
+
+![Test 2 image](https://i.postimg.cc/8zCFXyBX/test2.png)
+
+
+![Test 3 image](https://i.postimg.cc/RZbWkcgS/test3.png)
+
+
+![Test 4 image](https://i.postimg.cc/nLyCzn8N/test4.png)
+
+
+![Test 5 image](https://i.postimg.cc/MGMnqvLy/test5.png)
+
+
+
+
+| Test Point Inputs (x, y, z, yaw)    | IK solution ($\theta_1, ... , \theta_2$)           | Output from `/ur3/position`  |
+| ----------------------------------- |:--------------------------------:| ----------------------------:|
+| (0.2, 0.3, 0.3, 45)   | -3, -87, 76, 10, -90, 41                       |     0.2024327952511368, 0.2998730416938792, 0.2922309541454413, -3.1410653726283084, -0.0005972651532348697, 2.355397861113095                     |
+|(0.1, 0.4, 0.1, 90)    |  13, -75, 122, -46, -90, 13    |      0.10221953963658278, 0.40058781416084865, 0.09208110189432546, -3.1413923344001526, -0.000778260193922649, 3.1407961970043345   |
+|(0.2, 0.2, 0.2, 0)     |    -16, -93, 110, -16, -90, 73  |    0.20236654463515366, 0.19931977423280323, 0.1921250278612357, -3.1408315233541204, -0.00022523289422661107, 1.5699999427884836   |
+|(0.2, -0.2, 0.1, 0)    |   -66, -46, 73, -26, -90, 23    |   0.20088998162902214, -0.20194812505570606, 0.09223543084367461, -3.1412674345271707, -0.0007235896475745881, 1.5699998332989389   |
+|(0.2, 0.3, 0.4, 30)    |   -1, -75, 31, 43, -90, 58    |       0.2022798976349426, 0.29995554081154185, 0.39233735635051703, -3.14087941453308, -0.0004332842927020843, 2.0935987773817746  |
+
+Some error sources might include the position topic is off by a little because it is not publishing the position of the end effector we are using. Another possible source of error is rounding errors and floating point conversions.  
+
+## Singularities
+
+A singularity occur when the robot would become aligned or desired (x = L3 + L5 + L7 - 0.15, y = 0, z = L1 + 0.01). It can be fixed by randomly kicking one of the angles.
+
