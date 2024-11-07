@@ -32,32 +32,44 @@ class InverseKinematicsUR3e(Node):
 
 
     def calculate_fk_from_dh(self,q):
-        L1 = 0.152
-        L2 = 0.120
-        L3 = 0.244
-        L4 = 0.093
-        L5 = 0.213
-        L6 = 0.104
-        L7 = 0.083
-        L8 = 0.092
-        L9 = 0.0535
-        L10 = 0.059
+        # L1 = 0.152
+        # L2 = 0.120
+        # L3 = 0.244
+        # L4 = 0.093
+        # L5 = 0.213
+        # L6 = 0.104
+        # L7 = 0.083
+        # L8 = 0.092
+        # L9 = 0.0535
+        # L10 = 0.059
        
-        A1 = self.get_a_matrix(0,    L1,     q[0],          -np.pi/2) 
-        A2 = self.get_a_matrix(0,    L2,     q[1]-np.pi/2,  -np.pi/2) 
-        A3 = self.get_a_matrix(0,    L3,     0,             -np.pi/2) 
-        A4 = self.get_a_matrix(0,    L4,     q[2],          np.pi/2) 
-        A5 = self.get_a_matrix(0,    L5,     0,             np.pi/2) 
-        A6 = self.get_a_matrix(0,    L6,     q[3],          -np.pi/2) 
-        A7 = self.get_a_matrix(0,    L7,     q[4],          np.pi/2) 
-        A8 = self.get_a_matrix(0,    L8,     q[5]+np.pi/2,  np.pi/2) 
-        A9 = self.get_a_matrix(0,    L9,     0,             np.pi/2) 
-        A10 = self.get_a_matrix(0,   -L10,    np.pi/2,       0) 
+        # A1 = self.get_a_matrix(0,    L1,     q[0],          -np.pi/2) 
+        # A2 = self.get_a_matrix(0,    L2,     q[1]-np.pi/2,  -np.pi/2) 
+        # A3 = self.get_a_matrix(0,    L3,     0,             -np.pi/2) 
+        # A4 = self.get_a_matrix(0,    L4,     q[2],          np.pi/2) 
+        # A5 = self.get_a_matrix(0,    L5,     0,             np.pi/2) 
+        # A6 = self.get_a_matrix(0,    L6,     q[3],          -np.pi/2) 
+        # A7 = self.get_a_matrix(0,    L7,     q[4],          np.pi/2) 
+        # A8 = self.get_a_matrix(0,    L8,     q[5]+np.pi/2,  np.pi/2) 
+        # A9 = self.get_a_matrix(0,    L9,     0,             np.pi/2) 
+        # A10 = self.get_a_matrix(0,   -L10,    np.pi/2,       0) 
         
-        #compute T
-        T = A1@A2@A3@A4@A5@A6@A7@A8@A9@A10
+        # #compute T
+        # T = A1@A2@A3@A4@A5@A6@A7@A8@A9@A10
 
-        return T
+        # return T
+        A0 = np.array([[1, 0, 0, -0.15], [0, 1, 0, 0.15], [0, 0, 1, 0.01], [0, 0, 0, 1]])
+        A1 = self.calculate_a_mat(0, -np.pi/2, 0.15185, thetas[0])
+        A2 = self.calculate_a_mat(0.24355, 0, 0, thetas[1])
+        A3 = self.calculate_a_mat(0.2132, 0, 0, thetas[2])
+        A4 = self.calculate_a_mat(0, np.pi/2, 0.13105, thetas[3] + np.pi/2)
+        A5 = self.calculate_a_mat(0, -np.pi/2, 0.08535, thetas[4])
+        A6 = self.calculate_a_mat(0, 0, 0.0921, thetas[5])
+        A7 = self.calculate_a_mat(0.0535, 0, 0.052, np.pi)
+        return A0@A1@A2@A3@A4@A5@A6@A7
+
+
+
     def get_a_matrix(self, r, d, theta, alpha):
         return  np.array([
             [np.cos(theta), -np.sin(theta)*np.cos(alpha),   np.sin(theta)*np.sin(alpha),    r*np.cos(theta)],
