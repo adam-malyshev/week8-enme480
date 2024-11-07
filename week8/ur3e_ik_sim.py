@@ -59,18 +59,18 @@ class InverseKinematicsUR3e(Node):
 
         # return T
         A0 = np.array([[1, 0, 0, -0.15], [0, 1, 0, 0.15], [0, 0, 1, 0.01], [0, 0, 0, 1]])
-        A1 = self.calculate_a_mat(0, -np.pi/2, 0.15185, thetas[0])
-        A2 = self.calculate_a_mat(0.24355, 0, 0, thetas[1])
-        A3 = self.calculate_a_mat(0.2132, 0, 0, thetas[2])
-        A4 = self.calculate_a_mat(0, np.pi/2, 0.13105, thetas[3] + np.pi/2)
-        A5 = self.calculate_a_mat(0, -np.pi/2, 0.08535, thetas[4])
-        A6 = self.calculate_a_mat(0, 0, 0.0921, thetas[5])
-        A7 = self.calculate_a_mat(0.0535, 0, 0.052, np.pi)
+        A1 = self.get_a_matrix(0, -np.pi/2, 0.15185, q[0])
+        A2 = self.get_a_matrix(0.24355, 0, 0, q[1])
+        A3 = self.get_a_matrix(0.2132, 0, 0, q[2])
+        A4 = self.get_a_matrix(0, np.pi/2, 0.13105, q[3] + np.pi/2)
+        A5 = self.get_a_matrix(0, -np.pi/2, 0.08535, q[4])
+        A6 = self.get_a_matrix(0, 0, 0.0921, q[5])
+        A7 = self.get_a_matrix(0.0535, 0, 0.052, np.pi)
         return A0@A1@A2@A3@A4@A5@A6@A7
 
 
 
-    def get_a_matrix(self, r, d, theta, alpha):
+    def get_a_matrix(self, r, alpha, d, theta):
         return  np.array([
             [np.cos(theta), -np.sin(theta)*np.cos(alpha),   np.sin(theta)*np.sin(alpha),    r*np.cos(theta)],
             [np.sin(theta), np.cos(theta)*np.cos(alpha),    -np.cos(theta)*np.sin(alpha),   r*np.sin(theta)], 
